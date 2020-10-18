@@ -20,7 +20,7 @@ private val retrofit = Retrofit.Builder()
 
 interface CatApiService {
     @GET("/meow")
-    fun getNewCatAsync(): Deferred<String>
+    fun getNewCatAsync(): Deferred<CatResponse>
 }
 
 object CatApi {
