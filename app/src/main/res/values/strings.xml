@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Cats-n-Dogs</string>
+    <string name="photo_image_content_description">A random photo of a cat or dog</string>
+</resources>
