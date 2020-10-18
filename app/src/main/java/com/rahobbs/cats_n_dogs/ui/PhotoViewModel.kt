@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rahobbs.cats_n_dogs.network.CatApi
 import com.rahobbs.cats_n_dogs.network.CatResponse
+import com.rahobbs.cats_n_dogs.network.DogApi
+import com.rahobbs.cats_n_dogs.network.DogResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +22,10 @@ class PhotoViewModel : ViewModel() {
     val catResult: LiveData<CatResponse>
         get() = _catResult
 
+    private val _dogResult = MutableLiveData<DogResponse>()
+    val dogResult: LiveData<DogResponse>
+        get() = _dogResult
+
     private val _status = MutableLiveData<ApiStatus>()
     val status: LiveData<ApiStatus>
         get() = _status
@@ -34,12 +40,23 @@ class PhotoViewModel : ViewModel() {
     }
 
     private fun getNewAnimalPhoto() {
+//        coroutineScope.launch {
+//            val getCatDeferred = CatApi.retrofitService.getNewCatAsync()
+//            _status.value = ApiStatus.LOADING
+//            try {
+//                val catResponse = getCatDeferred.await()
+//                _catResult.value = catResponse
+//                _status.value = ApiStatus.DONE
+//            } catch (e: Exception) {
+//                _status.value = ApiStatus.ERROR
+//            }
+//        }
         coroutineScope.launch {
-            val getCatDeferred = CatApi.retrofitService.getNewCatAsync()
+            val getDogDeferred = DogApi.retrofitService.getNewDogAsync()
             _status.value = ApiStatus.LOADING
             try {
-                val catResponse = getCatDeferred.await()
-                _catResult.value = catResponse
+                val dogResponse = getDogDeferred.await()
+                _dogResult.value = dogResponse
                 _status.value = ApiStatus.DONE
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR

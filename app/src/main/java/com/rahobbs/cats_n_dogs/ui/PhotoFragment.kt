@@ -29,10 +29,13 @@ class PhotoFragment : Fragment() {
         binding = PhotoFragmentBinding.inflate(inflater, container, false)
 
         viewModel.status.observe(viewLifecycleOwner, Observer {
-            if (it == ApiStatus.ERROR) {
-                binding.animalPhoto.setImageResource(R.drawable.ic_baseline_broken_image_24)
-            } else if (it == ApiStatus.LOADING) {
-                // TODO: show progress spinner
+            when (it) {
+                ApiStatus.ERROR -> {
+                    binding.animalPhoto.setImageResource(R.drawable.ic_baseline_broken_image_24)
+                }
+                ApiStatus.LOADING -> {
+                    // TODO: show progress spinner
+                }
             }
         })
 
@@ -41,6 +44,13 @@ class PhotoFragment : Fragment() {
                 .load(it.file)
                 .into(binding.animalPhoto)
         })
+
+        viewModel.dogResult.observe(viewLifecycleOwner, {
+            Glide.with(requireContext())
+                .load(it.url)
+                .into(binding.animalPhoto)
+        })
+
         return binding.root
     }
 }
