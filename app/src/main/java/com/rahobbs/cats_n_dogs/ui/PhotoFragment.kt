@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rahobbs.cats_n_dogs.databinding.PhotoFragmentBinding
 
@@ -24,6 +25,10 @@ class PhotoFragment : Fragment() {
     ): View {
         binding = PhotoFragmentBinding.inflate(inflater, container, false)
 
+        viewModel.catResult.observe(viewLifecycleOwner, Observer {
+            print("photoResult$it")
+            // TODO: convert result to URI and pass to Glide
+        })
         return binding.root
     }
 }
