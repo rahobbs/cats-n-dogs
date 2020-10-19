@@ -1,6 +1,7 @@
 package com.rahobbs.cats_n_dogs.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,11 @@ class PhotoFragment : Fragment() {
             Glide.with(requireContext())
                 .load(it.url)
                 .into(binding.animalPhoto)
+        })
+
+        viewModel.sunRiseSetResult.observe(viewLifecycleOwner, {
+            Log.d("sun", "sunInfo: $it")
+            binding.latLongText.text = it.results.sunrise.toString()
         })
 
         return binding.root

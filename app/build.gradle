@@ -61,6 +61,9 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:4.8.0"
 
+    // Klock Date & Time library
+    implementation "com.soywiz.korlibs.klock:klock:1.12.1"
+
     // Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -1,12 +1,10 @@
 package com.rahobbs.cats_n_dogs.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rahobbs.cats_n_dogs.network.CatApi
-import com.rahobbs.cats_n_dogs.network.CatResponse
-import com.rahobbs.cats_n_dogs.network.DogApi
-import com.rahobbs.cats_n_dogs.network.DogResponse
+import com.rahobbs.cats_n_dogs.network.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,12 +24,33 @@ class PhotoViewModel : ViewModel() {
     val dogResult: LiveData<DogResponse>
         get() = _dogResult
 
+    private val _sunRiseSetResult = MutableLiveData<SunRiseSetResponse>()
+    val sunRiseSetResult: LiveData<SunRiseSetResponse>
+        get() = _sunRiseSetResult
+
     private val _status = MutableLiveData<ApiStatus>()
     val status: LiveData<ApiStatus>
         get() = _status
 
     init {
         getNewAnimalPhoto()
+        getSunRiseSetData()
+    }
+
+    private fun getSunRiseSetData() {
+        coroutineScope.launch {
+            val getSunRiseSet =
+                SunRiseSetApi.retrofitService.getSunRiseSetAsync(36.7201600, -4.4203400)
+            _status.value = ApiStatus.LOADING
+            try {
+                val sunRiseSetResponse = getSunRiseSet.await()
+                _sunRiseSetResult.value = sunRiseSetResponse
+                _status.value = ApiStatus.DONE
+            } catch (e: Exception) {
+                Log.d("sunriseError: " + e.message.toString(), Throwable().toString())
+                _status.value = ApiStatus.ERROR
+            }
+        }
     }
 
     override fun onCleared() {
@@ -63,4 +82,6 @@ class PhotoViewModel : ViewModel() {
             }
         }
     }
+
+
 }
