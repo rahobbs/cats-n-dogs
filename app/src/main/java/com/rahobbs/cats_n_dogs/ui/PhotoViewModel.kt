@@ -1,5 +1,6 @@
 package com.rahobbs.cats_n_dogs.ui
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,9 +33,15 @@ class PhotoViewModel : ViewModel() {
     val status: LiveData<ApiStatus>
         get() = _status
 
+    val location = MutableLiveData<Location>()
+
     init {
-        getNewAnimalPhoto()
         getSunRiseSetData()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 
     private fun getSunRiseSetData() {
@@ -46,6 +53,7 @@ class PhotoViewModel : ViewModel() {
                 val sunRiseSetResponse = getSunRiseSet.await()
                 _sunRiseSetResult.value = sunRiseSetResponse
                 _status.value = ApiStatus.DONE
+                getNewAnimalPhoto(false)
             } catch (e: Exception) {
                 Log.d("sunriseError: " + e.message.toString(), Throwable().toString())
                 _status.value = ApiStatus.ERROR
@@ -53,23 +61,29 @@ class PhotoViewModel : ViewModel() {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
+    private fun getNewAnimalPhoto(beforeSunrise: Boolean) {
+        if (beforeSunrise) {
+            getNewDogPic()
+        } else {
+            getNewCatPic()
+        }
     }
 
-    private fun getNewAnimalPhoto() {
-//        coroutineScope.launch {
-//            val getCatDeferred = CatApi.retrofitService.getNewCatAsync()
-//            _status.value = ApiStatus.LOADING
-//            try {
-//                val catResponse = getCatDeferred.await()
-//                _catResult.value = catResponse
-//                _status.value = ApiStatus.DONE
-//            } catch (e: Exception) {
-//                _status.value = ApiStatus.ERROR
-//            }
-//        }
+    private fun getNewCatPic() {
+        coroutineScope.launch {
+            val getCatDeferred = CatApi.retrofitService.getNewCatAsync()
+            _status.value = ApiStatus.LOADING
+            try {
+                val catResponse = getCatDeferred.await()
+                _catResult.value = catResponse
+                _status.value = ApiStatus.DONE
+            } catch (e: Exception) {
+                _status.value = ApiStatus.ERROR
+            }
+        }
+    }
+
+    private fun getNewDogPic() {
         coroutineScope.launch {
             val getDogDeferred = DogApi.retrofitService.getNewDogAsync()
             _status.value = ApiStatus.LOADING
@@ -82,6 +96,4 @@ class PhotoViewModel : ViewModel() {
             }
         }
     }
-
-
 }
