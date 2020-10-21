@@ -45,6 +45,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
 
     // Kotlinx serialization for Json Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0"
