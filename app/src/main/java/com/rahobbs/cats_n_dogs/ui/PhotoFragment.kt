@@ -18,6 +18,12 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.rahobbs.cats_n_dogs.R
 import com.rahobbs.cats_n_dogs.databinding.PhotoFragmentBinding
+import com.rahobbs.cats_n_dogs.formattedLatitude
+import com.rahobbs.cats_n_dogs.formattedLongitude
+import com.rahobbs.cats_n_dogs.network.nextSolarEventTimeString
+import java.lang.Math.round
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
     private lateinit var binding: PhotoFragmentBinding
@@ -37,12 +43,15 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
         savedInstanceState: Bundle?
     ): View {
         binding = PhotoFragmentBinding.inflate(inflater, container, false)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         checkLocationPermissions()
 
         viewModel.location.observe(viewLifecycleOwner, {
-            binding.latLongText.text = it.latitude.toString() + it.longitude.toString()
+            binding.latLongText.text = getString(
+                R.string.current_location,
+                it.formattedLatitude(),
+                it.formattedLongitude()
+            )
         })
 
         viewModel.status.observe(viewLifecycleOwner, Observer {
@@ -70,13 +79,16 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
 
         viewModel.sunRiseSetResult.observe(viewLifecycleOwner, {
             Log.d("sun", "sunInfo: $it")
-            binding.nextEventText.text = it.results.sunrise.toString()
+            binding.nextEventText.text =
+                getString(R.string.next_solar_event, it.results.nextSolarEventTimeString())
         })
 
         return binding.root
     }
 
     private fun checkLocationPermissions() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         when {
             ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -85,12 +97,16 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
                         location?.let {
-                            viewModel.location.postValue(it)
+                            viewModel.location.value = it
+                            viewModel.getSunRiseSetData()
                         }
                     }
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
-                // TODO: Provide information to user about permissions
+                /* TODO: Provide some information to the user about why we need these permissions.
+                * As a fallback, we could randomly choose to show a cat or dog, or hard code a default
+                * location.
+                * */
             }
             else -> {
                 requestPermissions(

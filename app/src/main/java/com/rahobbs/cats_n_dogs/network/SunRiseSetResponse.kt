@@ -1,9 +1,8 @@
 package com.rahobbs.cats_n_dogs.network
 
-import com.soywiz.klock.Date
+import com.soywiz.klock.DateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
  * Data as returned by the Sunset and Sunrise times api.
@@ -40,3 +39,16 @@ data class SunRiseSetResults(
     @SerialName("astronomical_twilight_end")
     val astronomicalTwilightEnd: ApiTime? = null
 )
+
+fun SunRiseSetResults.isDaytime(): Boolean {
+    val now = DateTime.now().time
+    return now > this.sunrise.value && now < this.sunset.value
+}
+
+fun SunRiseSetResults.nextSolarEventTimeString(): String {
+    return if (this.isDaytime()) {
+        this.sunset.toTime().toString()
+    } else {
+        this.sunrise.toTime().toString()
+    }
+}

@@ -35,25 +35,25 @@ class PhotoViewModel : ViewModel() {
 
     val location = MutableLiveData<Location>()
 
-    init {
-        getSunRiseSetData()
-    }
-
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
 
-    private fun getSunRiseSetData() {
+    fun getSunRiseSetData() {
         coroutineScope.launch {
+            // TODO: handle case where we haven't successfully gotten location
             val getSunRiseSet =
-                SunRiseSetApi.retrofitService.getSunRiseSetAsync(36.7201600, -4.4203400)
+                SunRiseSetApi.retrofitService.getSunRiseSetAsync(
+                    location.value!!.latitude,
+                    location.value!!.longitude
+                )
             _status.value = ApiStatus.LOADING
             try {
                 val sunRiseSetResponse = getSunRiseSet.await()
                 _sunRiseSetResult.value = sunRiseSetResponse
                 _status.value = ApiStatus.DONE
-                getNewAnimalPhoto(false)
+                getNewAnimalPhoto(sunRiseSetResponse.results.isDaytime())
             } catch (e: Exception) {
                 Log.d("sunriseError: " + e.message.toString(), Throwable().toString())
                 _status.value = ApiStatus.ERROR
@@ -61,11 +61,11 @@ class PhotoViewModel : ViewModel() {
         }
     }
 
-    private fun getNewAnimalPhoto(beforeSunrise: Boolean) {
-        if (beforeSunrise) {
-            getNewDogPic()
-        } else {
+    private fun getNewAnimalPhoto(isDaytime: Boolean) {
+        if (isDaytime) {
             getNewCatPic()
+        } else {
+            getNewDogPic()
         }
     }
 
