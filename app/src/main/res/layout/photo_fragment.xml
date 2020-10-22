@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.PhotoFragment">
 
+    <ProgressBar
+        android:id="@+id/full_screen_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:elevation="5dp"
+        android:visibility="visible" />
+
     <ImageView
         android:id="@+id/animal_photo"
         android:layout_width="match_parent"

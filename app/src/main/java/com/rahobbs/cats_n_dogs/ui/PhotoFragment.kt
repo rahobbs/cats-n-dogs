@@ -3,9 +3,11 @@ package com.rahobbs.cats_n_dogs.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.View.*
 import androidx.fragment.app.Fragment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -53,26 +55,24 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
             )
         })
 
-        viewModel.status.observe(viewLifecycleOwner, Observer {
+        viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 ApiStatus.ERROR -> {
+                    binding.fullScreenProgress.visibility = INVISIBLE
                     binding.animalPhoto.setImageResource(R.drawable.ic_baseline_broken_image_24)
                 }
                 ApiStatus.LOADING -> {
-                    // TODO: show progress spinner
+                    binding.fullScreenProgress.visibility = VISIBLE
+                }
+                ApiStatus.DONE -> {
+                    binding.fullScreenProgress.visibility = INVISIBLE
                 }
             }
         })
 
-        viewModel.catResult.observe(viewLifecycleOwner, {
+        viewModel.photoUrl.observe(viewLifecycleOwner, {
             Glide.with(requireContext())
-                .load(it.file)
-                .into(binding.animalPhoto)
-        })
-
-        viewModel.dogResult.observe(viewLifecycleOwner, {
-            Glide.with(requireContext())
-                .load(it.url)
+                .load(it)
                 .into(binding.animalPhoto)
         })
 
