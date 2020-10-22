@@ -11,6 +11,7 @@
         android:id="@+id/animal_photo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/photo_image_content_description"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/lat_long_text"
@@ -32,7 +33,7 @@
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_place_16"
         app:layout_constraintBottom_toTopOf="@id/next_event_text"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="73.23, 43.12" />
 
     <TextView
@@ -49,7 +50,7 @@
         android:paddingBottom="4dp"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="6:38pm" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

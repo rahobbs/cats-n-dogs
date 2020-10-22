@@ -5,10 +5,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -43,6 +41,7 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
         savedInstanceState: Bundle?
     ): View {
         binding = PhotoFragmentBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
         checkLocationPermissions()
 
@@ -84,6 +83,21 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
         })
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.photo_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.refresh_photo -> {
+                viewModel.getSunRiseSetData()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun checkLocationPermissions() {
