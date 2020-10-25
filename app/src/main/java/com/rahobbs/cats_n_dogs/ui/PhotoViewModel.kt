@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rahobbs.cats_n_dogs.isDaytime
 import com.rahobbs.cats_n_dogs.network.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +35,11 @@ class PhotoViewModel : ViewModel() {
 
     val location = MutableLiveData<Location>()
     private val timer: CountDownTimer
-    private var timeToRefresh = 300000L
+    private var timeToRefresh = COUNTDOWN_TIME_MS
 
     init {
-        timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND) {
+        _status.value = ApiStatus.LOADING
+        timer = object : CountDownTimer(COUNTDOWN_TIME_MS, ONE_SECOND) {
 
             override fun onTick(millisUntilFinished: Long) {
                 timeToRefresh = (millisUntilFinished / ONE_SECOND)
@@ -111,6 +113,6 @@ class PhotoViewModel : ViewModel() {
 
     companion object {
         private const val ONE_SECOND = 1000L
-        private const val COUNTDOWN_TIME = 300000L
+        private const val COUNTDOWN_TIME_MS = 300000L // 5 minutes
     }
 }

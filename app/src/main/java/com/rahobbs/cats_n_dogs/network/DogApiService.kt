@@ -13,7 +13,10 @@ private const val BASE_URL = "https://random.dog"
 private val dogContentType = MediaType.parse("application/json")
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json { ignoreUnknownKeys = true }.asConverterFactory(dogContentType!!))
+    .addConverterFactory(Json {
+        // Ignore unknown keys to ensure new properties on the response don't crash the app
+        ignoreUnknownKeys = true
+    }.asConverterFactory(dogContentType!!))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(BASE_URL)
     .build()

@@ -15,6 +15,7 @@ private val sunRiseSetContentType = MediaType.parse("application/json")
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json {
+        // Ignore unknown keys to ensure new properties on the response don't crash the app
         ignoreUnknownKeys = true
     }.asConverterFactory(sunRiseSetContentType!!))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())

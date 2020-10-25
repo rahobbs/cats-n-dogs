@@ -3,7 +3,6 @@ package com.rahobbs.cats_n_dogs.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -11,7 +10,6 @@ import android.view.View.*
 import androidx.fragment.app.Fragment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,10 +18,7 @@ import com.rahobbs.cats_n_dogs.R
 import com.rahobbs.cats_n_dogs.databinding.PhotoFragmentBinding
 import com.rahobbs.cats_n_dogs.formattedLatitude
 import com.rahobbs.cats_n_dogs.formattedLongitude
-import com.rahobbs.cats_n_dogs.network.nextSolarEventTimeString
-import java.lang.Math.round
-import java.math.BigDecimal
-import java.math.RoundingMode
+import com.rahobbs.cats_n_dogs.nextSolarEventTimeString
 
 class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
     private lateinit var binding: PhotoFragmentBinding
