@@ -4,15 +4,12 @@ import android.location.Location
 import com.rahobbs.cats_n_dogs.network.SunRiseSetResults
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.*
 
+// Extension functions on a Location object to format data
 fun Location.formattedLatitude(): String {
     return BigDecimal(this.latitude).setScale(
         2,
@@ -27,7 +24,8 @@ fun Location.formattedLongitude(): String {
     ).toString()
 }
 
-
+// Calculate whether he current time is daytime by comparing to
+// today's sunrise and sunset times
 fun SunRiseSetResults.isDaytime(): Boolean {
     val now = LocalTime.now()
     val localOffset: Long =
@@ -42,6 +40,7 @@ fun SunRiseSetResults.isDaytime(): Boolean {
     return now.isAfter(sunriseDateTime) && now.isBefore(sunsetDateTime)
 }
 
+// Get the next solar event based on current time of day and SunRiseSetResults
 fun SunRiseSetResults.nextSolarEventTimeString(): String {
     val localOffset: Long =
         ZoneId.systemDefault().rules.getOffset(LocalDateTime.now()).totalSeconds / 3600L
