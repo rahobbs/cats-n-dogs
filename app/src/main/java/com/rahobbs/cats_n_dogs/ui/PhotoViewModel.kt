@@ -38,7 +38,13 @@ class PhotoViewModel : ViewModel() {
     private var timeToRefresh = COUNTDOWN_TIME_MS
 
     init {
-        _status.value = ApiStatus.LOADING
+        // Initialize location to NYC as a default in case
+        // checking the user's location fails or they don't allow location permissions
+        location.value = Location("dummy_location")
+        location.value!!.latitude = 40.7128
+        location.value!!.longitude = -74.0060
+
+        // Initialize a CountDownTimer to always refresh our data every set time period
         timer = object : CountDownTimer(COUNTDOWN_TIME_MS, ONE_SECOND) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -51,7 +57,6 @@ class PhotoViewModel : ViewModel() {
         }
     }
 
-
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
@@ -59,9 +64,9 @@ class PhotoViewModel : ViewModel() {
 
     fun getSunRiseSetData() {
         coroutineScope.launch {
+            // Set status to loading until we have all of our data
             _status.value = ApiStatus.LOADING
 
-            // TODO: handle case where we haven't successfully gotten location
             val getSunRiseSet =
                 SunRiseSetApi.retrofitService.getSunRiseSetAsync(
                     location.value!!.latitude,
@@ -75,11 +80,15 @@ class PhotoViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.d("sunriseError: " + e.message.toString(), Throwable().toString())
                 _status.value = ApiStatus.ERROR
+                // TODO: Show something useful to the user
             }
         }
     }
 
     private fun getNewAnimalPhoto(isDaytime: Boolean) {
+        // Actually start the timer. I'm assuming here that fetching
+        // the photos won't take overly long and that we don't mind
+        // that counting against our timer
         timer.start()
         if (isDaytime) getNewCatPic()
         else getNewDogPic()
@@ -87,6 +96,7 @@ class PhotoViewModel : ViewModel() {
 
     private fun getNewCatPic() {
         coroutineScope.launch {
+            // Ideally, I'd like to move these retrofit service calls to a repository layer
             val getCatDeferred = CatApi.retrofitService.getNewCatAsync()
             try {
                 val catResponse = getCatDeferred.await()

@@ -53,14 +53,21 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
         viewModel.status.observe(viewLifecycleOwner, {
             when (it) {
                 ApiStatus.ERROR -> {
+                    // TODO: add some text to the UI telling the user what went wrong
                     binding.fullScreenProgress.visibility = INVISIBLE
                     binding.animalPhoto.setImageResource(R.drawable.ic_baseline_broken_image_24)
+                    binding.latLongText.visibility = INVISIBLE
+                    binding.nextEventText.visibility = INVISIBLE
                 }
                 ApiStatus.LOADING -> {
                     binding.fullScreenProgress.visibility = VISIBLE
+                    binding.latLongText.visibility = INVISIBLE
+                    binding.nextEventText.visibility = INVISIBLE
                 }
                 ApiStatus.DONE -> {
                     binding.fullScreenProgress.visibility = INVISIBLE
+                    binding.latLongText.visibility = VISIBLE
+                    binding.nextEventText.visibility = VISIBLE
                 }
             }
         })
@@ -107,7 +114,6 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
                     .addOnSuccessListener { location: Location? ->
                         location?.let {
                             viewModel.location.value = it
-                            viewModel.getSunRiseSetData()
                         }
                     }
             }
@@ -124,6 +130,10 @@ class PhotoFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallb
                 )
             }
         }
+        // Fetch data no matter the state of location permissions
+        // TODO: show the user something informative to explain that without location permissions,
+        // Sunrise/sunset times may be incorrect, but they get to see nice animals anyway
+        viewModel.getSunRiseSetData()
     }
 
     override fun onRequestPermissionsResult(
